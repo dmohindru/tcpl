@@ -1,0 +1,7 @@
+Providing input which test boundary conditions
+1. No input
+2. no word - just new lines
+3. no word - just blank, tabs and new lines
+4. one word per line - no blanks and tabs
+5. word starting at beginning of the line
+6. word starting after some blanks 
