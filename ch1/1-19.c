@@ -6,7 +6,7 @@
 #define MAXLINE 1000    /* Maximum input line size */
 
 int mygetline(char line[], int maxline);
-int removeblanks(char s[]);
+void reverse(char s[]);
 
 /* Print longest input line */
 main()
@@ -15,9 +15,11 @@ main()
     char line[MAXLINE];  /* current input line */
     int i;
 
-    while ((len = mygetline(line, MAXLINE)) > 0)
-        if ((i = removeblanks(line)) > 0)
-            printf("%d %s", i, line);
+    while ((len = mygetline(line, MAXLINE)) > 0) {
+        reverse(line);
+        printf("%s", line);
+    }
+        
     return 0;
 }
 
@@ -36,25 +38,29 @@ int mygetline(char s[], int lim)
     return i;
 }
 
-/* remove trailing blanks from line and return lenght of new line */
-int removeblanks(char s[])
+/* Function to reverse character string */
+void reverse(char s[])
 {
-    int i = 0;
+    int i, j;
+    char temp;
     
-    /* find \n character */
-    while (s[i] != '\n')
+    /* Move till end */
+    i = 0;
+    while (s[i] != '\0')
         ++i;
-    --i;    /* Back off from \n character */
     
-    /* move backwards till non blank character is found */
-    while (i >=0 && (s[i] == ' ' || s[i] == '\t'))
+    --i;   /* Backoff one position from '\0' character */
+    if (s[i] == '\n') /* If its a new line character leave in its place */
         --i;
+    
 
-    if (i >= 0) {
-        ++i;
-        s[i] = '\n';        /* Put trailing \n character */
-        ++i;
-        s[i] = '\0';        /* Terminate string */
+    /* Start reversing characters */
+    j = 0;
+    while (j < i) {
+        temp = s[i];
+        s[i] = s[j];
+        s[j] = temp;
+        ++j;
+        --i;
     }
-    return i;
 }
