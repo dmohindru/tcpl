@@ -1,4 +1,4 @@
-/* Date: 08/04/19
+/* Date: 09/04/19
    Description: Entab program to replace string of spaces with tabs 
 */
 #include <stdio.h>
@@ -41,28 +41,44 @@ int mygetline(char s[], int lim)
     return i;
 }
 
-/* new: buffer which contains detab string; 
-   old: buffer that contains buffer with tabs */
+/* new: buffer which contains entab string; 
+   old: buffer that contains buffer with string of spaces
+   logic: look of string of spaces where they start. It it
+   continues to next tab stop, replace those spaces with a \t.
+   Else do the normal copy. */
 void entab(char new[], char old[] )
 {
-    int i, j, k, nspace;
+    int i, j, nspace;
     char c;
     
-    i = j = 0;
+    i = j = nspace = 0;
     while ((c=old[i]) != '\0') {
-        if (c == '\t') {
-            k = j / TABSTOP;        /* Get index into tab stops */
-            nspace = TABSTOP -  (j - (k * TABSTOP)); /* Calucate no of spaces to next tab stop */
-            /* Fill up blank spaces */
-            k = j;
-            while (j < k + nspace) {
-                new[j] = ' ';
+        if (c == ' ') {
+            if (i % TABSTOP == 0 && nspace > 0) { /* If we have reached next tab stop with space */
+                new[j] = '\t';
+                nspace = 1;
                 ++j;
-            }    
-            /* increment i and j to point to next character */
+            }
+            else
+                ++nspace;
+            
             ++i;
         }
         else {
+            if (nspace > 0) {
+                if (i % TABSTOP == 0) {
+                    new[j] = '\t';
+                    nspace = 0;
+                    ++j;
+                }
+                else {
+                    while (nspace > 0) {
+                        new[j] = ' ';
+                        ++j;
+                        --nspace;
+                    }
+                }
+            }
             new[j] = c;
             ++j;
             ++i;
