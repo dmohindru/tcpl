@@ -4,82 +4,88 @@
 */
 #include <stdio.h>
 
-#define MAXLINE 1000    /* Maximum input line size */
-#define FOLDCOLUMN 10   /* Column where line has to be folded */ 
+#define MAXCOL 10   /* maximum column of input */
+#define TABINC 8    /* tab increment size */
 
-int mygetline(char line[], int maxline);
-void fold(char to[], char from[]);
+char line[MAXCOL];  /* input line */
 
-/* Print longest input line */
+int expandtab(int pos);
+int findblnk(int pos);
+int newpos(int pos);
+void printl(int pos);
+
+/* fold long input lines into two or more shorter lines */
 main()
 {
-    int len;        /* current line length */
-    int max;        /* maximum lenght seen so far */
-    char line[MAXLINE];  /* current input line */
-    char newline[MAXLINE]; /* longest line saved here */
+    int c, pos;
 
-    max = 0;
-    while ((len = mygetline(line, MAXLINE)) > 0) {
-        fold(newline, line);
-        printf("%s", newline);
+    pos = 0;
+    while ((c = getchar()) != EOF) {
+        line[pos] = c;      /* store current character */
+        if (c == '\t')      /* expand current character */
+            pos = expandtab(pos);
+        else if (c == '\n') {
+            printl(pos);    /* print the current input line */
+            pos = 0;
+        }
+        else if (++pos >= MAXCOL) {
+            pos = findblnk(pos);
+            printl(pos);
+            pos = newpos(pos);
+        }
     }
-        
-    
-    return 0;
 }
 
-/* getline: read a line into s, return length */
-int mygetline(char s[], int lim)
+/*printl: print line unitl pos column */
+void printl(int pos)
 {
-    int c, i;
-    
-    for (i=0; i < lim-1 && (c=getchar()) != EOF && c != '\n'; ++i)
-        s[i] = c;
-    if (c == '\n') {
-        s[i] = c;
-        ++i;
-    }
-    s[i] = '\0';
-    return i;
+    int i;
+
+    for (i = 0; i < pos; ++i)
+        putchar(line[i]);
+    if (pos > 0)        /* any chars printed */
+        putchar('\n');
+
 }
 
-/* fold: fold from 'from' into 'to'; assume to is big enough */
-void fold(char to[], char from[] )
+/* expandtab: expand tab into blanks */
+int expandtab(int pos)
 {
-    int i, j, k, colpos;
-    char c;
+    line[pos] = ' ';    /* tab is at least one blank */
+    for (++pos; pos < MAXCOL && pos % TABINC != 0; ++pos)
+        line[pos] = ' ';
+    if (pos < MAXCOL)   /* room left in current line */
+        return pos;
+    else {
+        printl(pos);    /* reset current position */
+        return 0;
+    }
+}
 
-    i = 0;
-    j = 0;
-    k = -1;
-    colpos = 0;
-    while ((c=from[i]) != '\0') {
-        if (c == ' ' || c == '\t' || c == '\n')
-            k = i;
-        
-        if (colpos >= FOLDCOLUMN) {
-            if (k > -1) {
-                to[k] = '\n';
-                to[j] = from[i];
-            }   
-            else {
-                to[j] = '\n';
-                ++j;
-                to[j] = from[i];
-            }
-            colpos = 0;
-            k = -1;
-            
+/* findblnk: find blank's position */
+int  findblnk(int pos)
+{
+    while (pos > 0 && line[pos] != ' ')
+        --pos;
+    if (pos == 0)       /* no blanks in line */
+        return MAXCOL;
+    else                /* at least one blank */
+        return pos+1;   /* position after the blank */
+}
+
+/* newpos: rearrange line with new position */
+int newpos(int pos)
+{
+    int i, j;
+
+    if (pos <= 0 || pos >= MAXCOL)
+        return 0;               /* nothing to rearrange */
+    else {
+        i = 0;
+        for (j = pos; j < MAXCOL; j++) {
+            line[i] = line[j];
+            ++i;
         }
-        else {
-            to[j] = from[i];
-            
-        }
-            
-        ++i;
-        ++j;
-        ++colpos;
-    } 
-    /* Terminate new string */
-    to[j] = '\0';     
+        return i;   /* new position in line */
+    }
 }
