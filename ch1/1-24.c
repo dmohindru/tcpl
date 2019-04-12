@@ -1,16 +1,10 @@
-/* Date: 11/04/19
-   Description: remove all multi line and single line comments from a C program
+/* Date: 12/04/19
+   Description: Program to check a c program for  unbalanced 
+   parentheses, brackets, braces, quotes (single and double), 
+   esacpe sequences and comments
 */
 #include <stdio.h>
 
-/* Print longest input line */
-/*
-1. Read character
-2. If char is / it might be a start of comment don't print it yet
-3. Read next char, if its * then mark a start of comment.
-4. Keep reading and don't print any char util char * is read. Which might indicate a end of comment
-5. Read next char if its a / char, mark end of comment and start printing any further chars read.
-*/
 main()
 {
     char c, nextc;
@@ -45,6 +39,3 @@ main()
         
             
 }
-    
-    
-
