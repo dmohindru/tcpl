@@ -4,7 +4,7 @@
    esacpe sequences and comments
 */
 #include <stdio.h>
-int comments();      /* Function to check comments block */
+int check_comment();      /* Function to check comments block, return 1 on valid comments, 0 otherwise */
 
 main()
 {
@@ -19,7 +19,17 @@ main()
         }
         
     }
-    return 0;
+    return 0;     
+}
+
+
+/* Function checks for proper comment block */
+int check_comment()
+{
+    char c;
+    int ret_val = 0; /* By default we assume it is a error */
+    while ((c=getchar()) != EOF) {
         
-            
+    }
+
 }
