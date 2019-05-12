@@ -29,7 +29,12 @@ int check_comment()
     char c;
     int ret_val = 0; /* By default we assume it is a error */
     while ((c=getchar()) != EOF) {
-        
+        if (c == '*') { /* It may be a end of comment block */
+
+        }
+
     }
+
+    return ret_val;
 
 }
