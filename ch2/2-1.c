@@ -72,14 +72,16 @@ int main()
     printf("double max = %.10e\n", DBL_MAX);
     printf("double min = %.10e\n", DBL_MIN);
 
+/*
     printf("\n-------------------------------------\n");
     printf("Printing range of floating types\n");
     printf("-------------------------------------\n");
+*/
     /* Bit pattern for max float value 0 11111110 11111111111111111111111 */
-    printf("Bit pattern for float max: %x\n", FLT_MAX);
+/*    printf("Bit pattern for float max: %x\n", FLT_MAX);
     printf("Bit pattern for float min: %x\n", FLT_MIN);
     printf("float max = %.10e\n", 0x27b82260);
     printf("float min = %.10e\n", 0x27b82260);
-
+*/
 
 }
