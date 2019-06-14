@@ -6,27 +6,28 @@
 #include <stdio.h>
 #define MAXLINE 1000
 
-int getline(char line[], int max);
+int mygetline(char line[], int max);
 int strindex(char source[], char searchfor[]);
 
 char pattern[] = "ould";    /* pattern to search for */
 
 /* find all line matching pattern */
-main()
+int main()
 {
     char line[MAXLINE];
     int found = 0;
 
-    while (getline(line, MAXLINE) > 0)
-        if (strindex(line, pattern) >= 0) {
-            printf("%s", line);
-            found++;
+    while (mygetline(line, MAXLINE) > 0) {
+
+        if ((found = strindex(line, pattern)) >= 0) {
+            printf("found string at index %d\n", found);
         }
-    return found;
+    }
+    return 0;
 }
 
 /* getline: get line into s, return lenght */
-int getline(char s[], int lim)
+int mygetline(char s[], int lim)
 {
     int c, i;
 
@@ -42,19 +43,19 @@ int getline(char s[], int lim)
 /*strindex: return the position of right most occurrence of t in s, or -1 if there none */
 int strindex(char s[], char t[])
 {
-    int i, j, k, m;
+    int i, j, s_end, t_end;
 
     /* find end of string */
-    for (i = 0; s[i] != '\0'; i++);
+    for (s_end = 0; s[s_end] != '\0'; s_end++);
     
-    for (j = 0; t[j] != '\0'; j++);
+    for (t_end = 0; t[t_end] != '\0'; t_end++);
 
     /* start comparing in reverse order */
-    for (i--; i >=0; i--){
+    for (s_end--; s_end >=0; s_end--){
 
-        for (k=i, m=j; m >=0 && s[k] == t[m]; k--, m--);
-        if (m < 0)
-            return k;
+        for (i=s_end, j=t_end-1; j >=0 && s[i] == t[j]; i--, j--);
+        if (j < 0)
+            return i + 1;
     } 
     return -1;
 }
