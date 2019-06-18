@@ -4,11 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
 #define MAXOP   100     /* Max sixe of operand or operator */
 #define NUMBER '0'      /* Signal that a number was found */
+#define NAME    'n'     /* Signal that it is a name */
 #define MAXVAL  100     /* maximum depth of val stack */
 #define BUFSIZE 100
+
 int sp = 0;             /* next free stack position */
 double val[MAXVAL];     /* value stack */
 int bufp = 0;           /* next free position in buf */
@@ -20,6 +23,7 @@ double pop(void);
 int getch(void);
 void ungetch(int);
 void clear(void); /* Function to stack */
+void mathfunc(char []); /* Function for various math functions */
 
 /* reverse Polish calculator */
 
@@ -34,6 +38,9 @@ int main()
             case NUMBER:
                 //printf("Number being pushed: %s\n", s);
                 push(atof(s));
+                break;
+            case NAME:
+                mathfunc(s);
                 break;
             case '+':
                 push(pop() + pop());
@@ -117,9 +124,23 @@ int getop(char s[])
 
     while ((s[0] = c = getch()) == ' ' || c == '\t');
     s[1] = '\0';
+    
+    i = 0;
+    if (islower(c)) { /* Command or a name */
+        while (islower(s[++i] = c = getch()));
+        s[i] = '\0';
+        if (c != EOF)
+            ungetch(c);
+        if (strlen(s) > 1)      /* It may be a name */
+            return NAME;
+        else 
+            return c;           /* It may be a command */
+    
+    }
+    
     if (!isdigit(c) && c != '.' && c != '-')
         return c;           /* not a number */
-    i = 0;
+
     if (c == '-') { /* It may be a negetive number or minus sign */
         if (isdigit(c = getch()) || c == '.' ) /* its a negetive number */
             s[++i] = c;
@@ -155,8 +176,15 @@ void ungetch(int c)
         buf[bufp++] = c;
 }
 
-/* Clear stack */
+/*clear: clear stack */
 void clear(void)
 {
     sp = 0;
 }
+
+/*mathfunc: perform various math functions */
+void mathfunc(char s[])
+{
+
+}
+
