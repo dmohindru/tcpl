@@ -30,14 +30,19 @@ void mathfunc(char []); /* Function for various math functions */
 
 int main()
 {
-    int type;
-    double op2, op3;
+    int type, i, var;
+    double op2, op3, v;
     char s[MAXOP];
+    double variable[26];
+
+    for (i = 0; i < 26; i++)
+        variable[i] = 0.0;
 
     while((type = getop(s)) != EOF) {
+        printf("type: %d\n", type);
         switch (type) {
+            
             case NUMBER:
-                //printf("Number being pushed: %s\n", s);
                 push(atof(s));
                 break;
             case NAME:
@@ -87,13 +92,28 @@ int main()
             case '!':   /* clear stack */
                 clear();
                 break;
+            case '=':
+                pop();
+                if (var >='A' && var <='Z')
+                    variable[var - 'A'] = pop();
+                else
+                    printf("Variable not supported\n");
+                break;
+                
             case '\n':
-                printf("\t%.8g\n", pop());
+                v = pop();
+                printf("\t%.8g\n", v);
                 break;
             default:
-                printf("error: unknown command %s\n", s);
+                if (type >= 'A' && type <='Z')
+                    push(variable[type - 'A']);
+                else if (type == 'v')
+                    push(v);
+                else
+                    printf("error: unknown command %s\n", s);
                 break;
         }
+        var = type;
     }
     return 0;
 }
@@ -165,16 +185,31 @@ int getop(char s[])
 /* getch: get a (possibly pushed back) character */
 int getch(void) 
 {
-    return (bufp > 0) ? buf[--bufp] : getchar();
+    int c;
+    if (bufp != 0)
+        c = bufp;
+    else
+        c = getchar();
+    bufp = 0;
+    return c;
 }
 
 /*ungetch: push character back on input */
 void ungetch(int c)
 {
-    if (bufp >= BUFSIZE)
-        printf("ungetch: too many characters\n");
+    if (bufp == 0)
+        bufp = c;
     else
-        buf[bufp++] = c;
+        printf("error: too many characters to push back\n");
+}
+
+/*ungets: push string back onto input */
+void ungets(char s[])
+{
+    /* Ungets does need to know about buf and bufp. As its details are handled by ungetch and its error handling */
+    int len = strlen(s);
+    while (len > 0)
+        ungetch(s[--len]);
 }
 
 /*clear: clear stack */
