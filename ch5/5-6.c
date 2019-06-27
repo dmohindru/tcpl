@@ -60,3 +60,60 @@ void reverse(char *s)
     }
     
 }
+
+/* strindex: pointer version of strindex */
+int strindex(char *s, char *t)
+{
+    char *s1, *t1, *s2;
+    for (s2 = s; *s2 != '\0'; s2++) {
+        for (s1 = s2, t1 = t; *t1 != '\0' && *s1 == *t1; s1++, t1++)
+            ;
+        if (*t1 == '\0' && t1 > t)
+            return s2 - s;
+    }
+    return -1;
+}
+
+/* atof: convert string s to double my version*/
+double atof(char *s)
+{
+    double val, power;
+    int sign;
+
+    for (; isspace(*s); s++) /* skip white space */
+        ;
+    sign = (*s == '-')? -1 : 1;
+    if (*s == '+' || *s == '-')
+        s++;
+    for (val = 0.0; isdigit(*s); s++)
+        val = 10.0 * val + (*s - '0');
+    if (*s == '.')
+        s++;
+    for (power = 1.0; isdigit(*s); s++) {
+        val = 10.0 * val + (*s - '0');
+        power *= 10.0;
+    }
+    return sign * val / power;
+}
+
+#define NUMBER '0'      /* Signal that a number was found */
+/* getop: pointer version of getopt */
+int getop(char *s)
+{
+    int i, c;
+
+    while ((*s = c = getch()) == ' ' || c == '\t');
+    *(s+1) = '\0';
+    if (!isdigit(c) && c != '.')
+        return c;           /* not a number */
+    i = 0;
+    if (isdigit(c))         /* collect integer part */
+        while (isdigit(*++s = c = getch()));
+    if (c == '.')           /* collect fraction part */
+        while (isdigit(*++s = c = getch()));
+    *s = '\0';
+    if (c != EOF)
+        ungetch(c);
+    return NUMBER;
+}
+
