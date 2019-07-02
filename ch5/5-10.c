@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     char s[MAXOP];
 
     if (argc < 4) {
-        printf("Improper expression\n");
+        printf("usage: expr num1 num2 operator\n");
         return 1;
     }
     /* while (*++argv) 
@@ -40,24 +40,24 @@ int main(int argc, char *argv[])
         type = getop(*argv);
         switch (type) {
             case NUMBER:
-                printf("Got a number\n");
+                //printf("Got a number\n");
                 push(atof(*argv));
                 break;
             case '+':
-                printf("Got a +\n");
+                //printf("Got a +\n");
                 push(pop() + pop());
                 break;
             case '*':
-                printf("Got a *\n");
+                //printf("Got a *\n");
                 push(pop() * pop());
                 break;
             case '-':
-                printf("Got a -\n");
+                //printf("Got a -\n");
                 op2 = pop();
                 push(pop() - op2);
                 break;
             case '/':
-                printf("Got a /\n");
+                //printf("Got a /\n");
                 op2 = pop();
                 if (op2 != 0.0)
                     push(pop() / op2);
